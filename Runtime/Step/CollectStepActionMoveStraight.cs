@@ -1,4 +1,5 @@
 using DG.Tweening;
+using LazyCoder.Core;
 using UnityEngine;
 
 namespace LazyCoder.Collect
