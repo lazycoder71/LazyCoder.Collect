@@ -55,7 +55,7 @@ namespace LazyCoder.Collect
             {
                 UtilsHaltonSequence.Increment(true, true, false);
 
-                Vector3 position = new Vector3(-_spawnSampleRadius, -_spawnSampleRadius) + (UtilsHaltonSequence.currentPosition * _spawnSampleRadius * 2.0f);
+                Vector3 position = new Vector3(-_spawnSampleRadius, -_spawnSampleRadius) + (UtilsHaltonSequence.CurrentPosition * _spawnSampleRadius * 2.0f);
 
                 if (Vector3.Distance(Vector3.zero, position) > _spawnSampleRadius)
                     continue;
