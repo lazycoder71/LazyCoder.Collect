@@ -11,7 +11,7 @@ namespace LazyCoder.Collect
         [Title("Reference")]
         [SerializeField, AssetsOnly] private CollectConfig _config;
         [SerializeField] private Color _colorStart = Color.white;
-        [SerializeField] private Color _colorEnd = Color.orange;
+        [SerializeField] private Color _colorEnd = Color.black;
 
         private void OnDrawGizmos()
         {

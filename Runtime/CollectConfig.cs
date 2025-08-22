@@ -1,4 +1,3 @@
-using LazyCoder.Core;
 using Sirenix.OdinInspector;
 using System.Collections.Generic;
 using UnityEngine;
@@ -24,7 +23,7 @@ namespace LazyCoder.Collect
 
         [Title("Step")]
         [ListDrawerSettings(ShowIndexLabels = false, OnBeginListElementGUI = "BeginDrawListElement", OnEndListElementGUI = "EndDrawListElement")]
-        [SerializeReference] CollectStep[] _steps;
+        [SerializeReference] CollectStep[] _steps = new CollectStep[0];
 
         public GameObject spawnPrefab { get { return _spawnPrefab; } }
         public float spawnDuration { get { return _spawnDuration; } }
