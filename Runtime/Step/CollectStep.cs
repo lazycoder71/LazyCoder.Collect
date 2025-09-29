@@ -16,6 +16,6 @@ namespace LazyCoder.Collect
 
         public virtual string DisplayName { get { return Regex.Replace(ToString().Replace(typeof(CollectStep).ToString(), ""), "(?<!^)([A-Z])", " $1"); } }
 
-        public abstract void Apply(CollectObject obj);
+        public abstract void Apply(CollectGroupItem obj);
     }
 }

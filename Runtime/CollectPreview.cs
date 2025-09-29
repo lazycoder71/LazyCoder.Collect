@@ -20,12 +20,12 @@ namespace LazyCoder.Collect
 
             float unitPerPixel = GetComponent<RectTransform>().GetUnitPerPixel();
 
-            for (int i = 0; i < _config.spawnPositions.Count; i++)
+            for (int i = 0; i < _config.SpawnPositions.Count; i++)
             {
-                D.raw(new Shape.Circle2D(transform.TransformPoint(_config.spawnPositions[i]), 5.0f * unitPerPixel), Color.Lerp(_colorStart, _colorEnd, (float)i / (_config.spawnPositions.Count - 1)));
+                D.raw(new Shape.Circle2D(transform.TransformPoint(_config.SpawnPositions[i]), 5.0f * unitPerPixel), Color.Lerp(_colorStart, _colorEnd, (float)i / (_config.SpawnPositions.Count - 1)));
             }
 
-            D.raw(new Shape.Circle2D(transform.position, _config.spawnSampleRadius * unitPerPixel), Color.yellow);
+            D.raw(new Shape.Circle2D(transform.position, _config.SpawnSampleRadius * unitPerPixel), Color.yellow);
         }
     }
 }

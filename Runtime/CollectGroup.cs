@@ -6,11 +6,13 @@ using UnityEngine;
 
 namespace LazyCoder.Collect
 {
-    public class Collect : MonoBase
+    public class CollectGroup : MonoBase
     {
-        private CollectConfig _config;
+        public CollectConfig Config { get; private set; }
 
-        private CollectDestination _destination;
+        public CollectDestination Destination { get; private set; }
+
+        public CollectContext Context { get; private set; }
 
         private Tween _tween;
 
@@ -21,20 +23,25 @@ namespace LazyCoder.Collect
             _tween?.Kill();
         }
 
-        public void Construct(CollectConfig config, CollectDestination destination, int valueCount, int spawnCount, Action onComplete)
+        public void Construct(CollectConfig config, CollectContext context, CollectDestination destination,
+            Action onComplete)
         {
-            _config = config;
-            _destination = destination;
+            Config = config;
+            Context = context;
+            Destination = destination;
+            
             _onComplete = onComplete;
 
-            float delayBetween = spawnCount > 1 ? config.spawnDuration / (spawnCount - 1) : 0.0f;
+            int spawnCount = context.SpawnCount;
+
+            float delayBetween = spawnCount > 1 ? config.SpawnDuration / (spawnCount - 1) : 0.0f;
 
             // Construct spawn sequence
             Sequence sequence = DOTween.Sequence();
 
             for (int i = 0; i < spawnCount; i++)
             {
-                Vector3 spawnPosition = config.spawnPositions.GetLoop(i);
+                Vector3 spawnPosition = config.SpawnPositions.GetLoop(i);
 
                 sequence.AppendCallback(() => { Spawn(spawnPosition); });
                 sequence.AppendInterval(delayBetween);
@@ -47,15 +54,15 @@ namespace LazyCoder.Collect
             _tween = sequence;
 
             // Notify destination about the return begin
-            _destination.CollectBegin(valueCount, spawnCount);
+            destination.CollectBegin(context);
         }
 
         private void StartCheckEmptyLoop()
         {
             _tween?.Kill();
             _tween = DOVirtual.DelayedCall(1.0f, null, false)
-                              .SetLoops(-1, LoopType.Restart)
-                              .OnUpdate(CheckEmpty);
+                .SetLoops(-1, LoopType.Restart)
+                .OnUpdate(CheckEmpty);
         }
 
         private void CheckEmpty()
@@ -66,7 +73,7 @@ namespace LazyCoder.Collect
 
         private void Destruct()
         {
-            _destination.ReturnEnd();
+            Destination.CollectEnd();
 
             _onComplete?.Invoke();
 
@@ -75,12 +82,13 @@ namespace LazyCoder.Collect
 
         private void Spawn(Vector3 spawnPosition)
         {
-            CollectObject obj = PoolPrefabShared.Get(_config.spawnPrefab, TransformCached).GetComponent<CollectObject>();
+            CollectGroupItem collectObj = PoolPrefabShared.Get(Config.SpawnPrefab, TransformCached)
+                .GetComponent<CollectGroupItem>();
 
-            obj.TransformCached.localPosition = spawnPosition;
-            obj.TransformCached.localScale = Vector3.one;
+            collectObj.TransformCached.localPosition = spawnPosition;
+            collectObj.TransformCached.localScale = Vector3.one;
 
-            obj.Construct(_config, _destination);
+            collectObj.Construct(this);
         }
     }
 }

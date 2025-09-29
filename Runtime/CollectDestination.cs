@@ -1,6 +1,5 @@
 using LazyCoder.Core;
 using Sirenix.OdinInspector;
-using System;
 using UnityEngine;
 
 namespace LazyCoder.Collect
@@ -13,58 +12,50 @@ namespace LazyCoder.Collect
         [Title("Config")]
         [SerializeField] private CollectConfig _config;
 
-        public event Action<int, int> EventCollectBegin;
-        public event Action<float> EventCollect;
-        public event Action EventCollectEnd;
+        protected int ReturnExpect;
 
-        private int _returnExpect;
-        private int _returnCount;
+        protected int ReturnCount;
 
-        public CollectConfig Config { get { return _config; } }
+        protected float ReturnProgress => (float)ReturnCount / ReturnExpect;
 
-        public Vector3 Position { get { return _target == null ? TransformCached.position : _target.position; } }
+        public CollectConfig Config => _config;
+
+        public Vector3 Position => _target == null ? TransformCached.position : _target.position;
 
         protected override void OnEnable()
         {
             base.OnEnable();
 
-            CollectDestinationManager.Push(this);
+            if (_config != null)
+                CollectDestinationManager.Push(this);
         }
 
         protected override void OnDisable()
         {
             base.OnDisable();
 
-            CollectDestinationManager.Pop(this);
+            if (_config != null)
+                CollectDestinationManager.Pop(this);
         }
 
-        public void CollectBegin(int valueCount, int spawnCount)
+        public virtual void CollectBegin(CollectContext context)
         {
-            _returnExpect += spawnCount;
-
-            EventCollectBegin?.Invoke(valueCount, spawnCount);
-        }
-
-        public void Collect()
-        {
-            _returnCount++;
-
-            if (_returnCount == _returnExpect)
+            if (ReturnCount >= ReturnExpect)
             {
-                _returnCount = 0;
-                _returnExpect = 0;
+                ReturnExpect = 0;
+                ReturnCount = 0;
+            }
 
-                EventCollect?.Invoke(1f);
-            }
-            else
-            {
-                EventCollect?.Invoke((float)_returnCount / _returnExpect);
-            }
+            ReturnExpect += context.SpawnCount;
         }
 
-        public void ReturnEnd()
+        public virtual void Collect()
         {
-            EventCollectEnd?.Invoke();
+            ReturnCount++;
+        }
+
+        public virtual void CollectEnd()
+        {
         }
     }
 }

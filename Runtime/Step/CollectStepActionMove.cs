@@ -26,19 +26,19 @@ namespace LazyCoder.Collect
 
         public override string DisplayName { get { return $"{base.DisplayName} ({_journey})"; } }
 
-        protected override Tween GetTween(CollectObject obj)
+        protected override Tween GetTween(CollectGroupItem item)
         {
             switch (_journey)
             {
                 case Journey.Spawn:
-                    Vector3 endPos = obj.TransformCached.localPosition;
-                    Vector3 startPos = _startAtCenter ? Vector3.zero : endPos + _startOffset * obj.RectTransform.GetUnitPerPixel();
+                    Vector3 endPos = item.TransformCached.localPosition;
+                    Vector3 startPos = _startAtCenter ? Vector3.zero : endPos + _startOffset * item.RectTransform.GetUnitPerPixel();
 
-                    return obj.TransformCached.DOLocalMove(endPos, _duration)
+                    return item.TransformCached.DOLocalMove(endPos, _duration)
                                               .ChangeStartValue(startPos)
                                               .SetEase(_ease);
                 case Journey.Return:
-                    return obj.TransformCached.DOMove(obj.Destination.Position, _duration)
+                    return item.TransformCached.DOMove(item.Destination.Position, _duration)
                                               .SetEase(_ease);
                 default:
                     return null;

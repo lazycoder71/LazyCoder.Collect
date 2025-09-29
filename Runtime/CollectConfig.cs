@@ -9,27 +9,29 @@ namespace LazyCoder.Collect
     {
         [Title("Spawn")]
         [AssetsOnly]
-        [SerializeField] GameObject _spawnPrefab;
-        [SerializeField] float _spawnDuration = 0.5f;
+        [SerializeField] private GameObject _spawnPrefab;
+
+        [SerializeField] private float _spawnDuration = 0.5f;
 
         [FoldoutGroup("SpawnSample", GroupName = "Spawn Sample (in pixel unit)", Expanded = false)]
-        [SerializeField] List<Vector3> _spawnSamplePositions;
+        [SerializeField] private List<Vector3> _spawnSamplePositions;
 
         [FoldoutGroup("SpawnSample")]
-        [SerializeField] int _spawnSampleCount = 10;
+        [SerializeField] private int _spawnSampleCount = 10;
 
         [FoldoutGroup("SpawnSample")]
-        [SerializeField] float _spawnSampleRadius = 100.0f;
+        [SerializeField] private float _spawnSampleRadius = 100.0f;
 
         [Title("Step")]
-        [ListDrawerSettings(ShowIndexLabels = false, OnBeginListElementGUI = "BeginDrawListElement", OnEndListElementGUI = "EndDrawListElement")]
-        [SerializeReference] CollectStep[] _steps = new CollectStep[0];
+        [ListDrawerSettings(ShowIndexLabels = false, OnBeginListElementGUI = "BeginDrawListElement",
+            OnEndListElementGUI = "EndDrawListElement")]
+        [SerializeReference] private CollectStep[] _steps = new CollectStep[0];
 
-        public GameObject spawnPrefab { get { return _spawnPrefab; } }
-        public float spawnDuration { get { return _spawnDuration; } }
-        public List<Vector3> spawnPositions { get { return _spawnSamplePositions; } }
-        public float spawnSampleRadius { get { return _spawnSampleRadius; } }
-        public CollectStep[] steps { get { return _steps; } }
+        public GameObject SpawnPrefab => _spawnPrefab;
+        public float SpawnDuration => _spawnDuration;
+        public List<Vector3> SpawnPositions => _spawnSamplePositions;
+        public float SpawnSampleRadius => _spawnSampleRadius;
+        public CollectStep[] Steps => _steps;
 
 #if UNITY_EDITOR
 
@@ -55,7 +57,8 @@ namespace LazyCoder.Collect
             {
                 CollectHaltonSequence.Increment(true, true, false);
 
-                Vector3 position = new Vector3(-_spawnSampleRadius, -_spawnSampleRadius) + (CollectHaltonSequence.CurrentPosition * _spawnSampleRadius * 2.0f);
+                Vector3 position = new Vector3(-_spawnSampleRadius, -_spawnSampleRadius) +
+                                   (CollectHaltonSequence.CurrentPosition * _spawnSampleRadius * 2.0f);
 
                 if (Vector3.Distance(Vector3.zero, position) > _spawnSampleRadius)
                     continue;

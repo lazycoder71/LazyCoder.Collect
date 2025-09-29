@@ -6,12 +6,13 @@ namespace LazyCoder.Collect
 {
     public static class CollectHelper
     {
-        public static void Spawn(CollectConfig config, Vector3 spawnPosition, int valueCount, int spawnCount, Action onComplete = null)
+        public static void Spawn(CollectConfig config, CollectContext context, Vector3 spawnPosition,
+            Action onComplete = null)
         {
             // Find destination
             CollectDestination destination = CollectDestinationManager.Get(config);
 
-            // Check destination exist
+            // Check destination exists
             if (destination == null)
             {
                 LDebug.Log(typeof(CollectHelper), $"Can't find destination for {config.name}");
@@ -21,17 +22,17 @@ namespace LazyCoder.Collect
                 return;
             }
 
-            // Spawn collect object
+            // Spawn the Collect object
             GameObject objCollect = new GameObject(config.name, typeof(RectTransform));
 
-            // Setup collect object
-            Collect collect = objCollect.AddComponent<Collect>();
+            // Set up the Collect object
+            CollectGroup collectGroup = objCollect.AddComponent<CollectGroup>();
 
-            collect.TransformCached.SetParent(destination.TransformCached.parent, false);
-            collect.TransformCached.SetAsLastSibling();
-            collect.TransformCached.position = spawnPosition;
+            collectGroup.TransformCached.SetParent(destination.TransformCached.parent, false);
+            collectGroup.TransformCached.SetAsLastSibling();
+            collectGroup.TransformCached.position = spawnPosition;
 
-            collect.Construct(config, destination, valueCount, spawnCount, onComplete);
+            collectGroup.Construct(config, context, destination, onComplete);
         }
     }
 }

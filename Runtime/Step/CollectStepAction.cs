@@ -12,7 +12,7 @@ namespace LazyCoder.Collect
 
         [SerializeField]
         [HorizontalGroup("AddType"), LabelWidth(75), SuffixLabel("Second(s)", true)]
-        [ShowIf("@_addType == LCollectStep.AddType.Insert"), MinValue(0)]
+        [ShowIf("@_addType == CollectStep.AddType.Insert"), MinValue(0)]
         private float _insertTime = 0.0f;
 
         [SerializeField]
@@ -37,7 +37,7 @@ namespace LazyCoder.Collect
         [ShowIf("@_loopTime != 0"), HorizontalGroup("Loop"), LabelWidth(75)]
         private LoopType _loopType = LoopType.Restart;
 
-        public override void Apply(CollectObject obj)
+        public override void Apply(CollectGroupItem obj)
         {
             Tween tween = GetTween(obj);
 
@@ -59,7 +59,7 @@ namespace LazyCoder.Collect
             }
         }
 
-        protected virtual Tween GetTween(CollectObject obj)
+        protected virtual Tween GetTween(CollectGroupItem item)
         {
             return null;
         }

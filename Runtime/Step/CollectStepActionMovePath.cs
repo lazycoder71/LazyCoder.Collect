@@ -12,7 +12,7 @@ namespace LazyCoder.Collect
         [ValidateInput("CheckPoints", "Path Type: Cubic Bezier - Control points must be 2")]
         [SerializeField] private Vector3[] _points;
 
-        protected override Tween GetTween(CollectObject obj)
+        protected override Tween GetTween(CollectGroupItem item)
         {
             Vector3 posStart = Vector3.zero;
             Vector3 posEnd = Vector3.zero;
@@ -20,12 +20,12 @@ namespace LazyCoder.Collect
             switch (_journey)
             {
                 case Journey.Spawn:
-                    posEnd = obj.TransformCached.localPosition;
-                    posStart = _startAtCenter ? Vector3.zero : posEnd + _startOffset * obj.RectTransform.GetUnitPerPixel();
+                    posEnd = item.TransformCached.localPosition;
+                    posStart = _startAtCenter ? Vector3.zero : posEnd + _startOffset * item.RectTransform.GetUnitPerPixel();
                     break;
                 case Journey.Return:
-                    posEnd = obj.Destination.Position;
-                    posStart = obj.TransformCached.position;
+                    posEnd = item.Destination.Position;
+                    posStart = item.TransformCached.position;
                     break;
             }
 
@@ -37,7 +37,7 @@ namespace LazyCoder.Collect
                 points[1] = posStart + (posEnd - posStart).MultipliedBy(_points[0]);
                 points[2] = posStart + (posEnd - posStart).MultipliedBy(_points[1]);
 
-                return obj.TransformCached.DOPath(points, _duration, _pathType, PathMode.Sidescroller2D, 10, Color.red);
+                return item.TransformCached.DOPath(points, _duration, _pathType, PathMode.Sidescroller2D, 10, Color.red);
             }
             else
             {
@@ -51,7 +51,7 @@ namespace LazyCoder.Collect
                     points[i + 1] = posStart + (posEnd - posStart).MultipliedBy(_points[i]);
                 }
 
-                return obj.TransformCached.DOPath(points, _duration, _pathType, PathMode.Full3D, 10, Color.red);
+                return item.TransformCached.DOPath(points, _duration, _pathType, PathMode.Full3D, 10, Color.red);
             }
         }
 
