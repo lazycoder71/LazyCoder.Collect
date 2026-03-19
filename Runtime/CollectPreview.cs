@@ -1,7 +1,10 @@
 using LazyCoder.Core;
 using Sirenix.OdinInspector;
 using UnityEngine;
+
+# if LAZYCODER_DRAW_DEBUG
 using Vertx.Debugging;
+#endif
 
 namespace LazyCoder.Collect
 {
@@ -10,9 +13,11 @@ namespace LazyCoder.Collect
     {
         [Title("Reference")]
         [SerializeField, AssetsOnly] private CollectConfig _config;
+
         [SerializeField] private Color _colorStart = Color.white;
         [SerializeField] private Color _colorEnd = Color.black;
 
+#if LAZYCODER_DRAW_DEBUG
         private void OnDrawGizmos()
         {
             if (_config == null)
@@ -22,10 +27,12 @@ namespace LazyCoder.Collect
 
             for (int i = 0; i < _config.SpawnPositions.Count; i++)
             {
-                D.raw(new Shape.Circle2D(transform.TransformPoint(_config.SpawnPositions[i]), 5.0f * unitPerPixel), Color.Lerp(_colorStart, _colorEnd, (float)i / (_config.SpawnPositions.Count - 1)));
+                D.raw(new Shape.Circle2D(transform.TransformPoint(_config.SpawnPositions[i]), 5.0f * unitPerPixel),
+                    Color.Lerp(_colorStart, _colorEnd, (float)i / (_config.SpawnPositions.Count - 1)));
             }
 
             D.raw(new Shape.Circle2D(transform.position, _config.SpawnSampleRadius * unitPerPixel), Color.yellow);
         }
+#endif
     }
 }
