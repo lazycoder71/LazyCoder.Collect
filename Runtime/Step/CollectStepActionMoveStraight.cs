@@ -1,28 +1,19 @@
 using DG.Tweening;
-using LazyCoder.Core;
 using UnityEngine;
 
 namespace LazyCoder.Collect
 {
+    [System.Serializable]
     public class CollectStepActionMoveStraight : CollectStepActionMove
     {
-        protected override Tween GetTween(CollectGroupItem item)
+        protected override Tween GetTween(CollectItem item)
         {
-            switch (_journey)
-            {
-                case Journey.Spawn:
-                    Vector3 endPos = item.TransformCached.localPosition;
-                    Vector3 startPos = _startAtCenter ? Vector3.zero : endPos + _startOffset * item.RectTransform.GetUnitPerPixel();
+            Vector3 startPos = GetStartPosition(item);
+            Vector3 endPos = GetEndPosition(item);
 
-                    return item.TransformCached.DOLocalMove(endPos, _duration)
-                                              .ChangeStartValue(startPos)
-                                              .SetEase(_ease);
-                case Journey.Return:
-                    return item.TransformCached.DOMove(item.Destination.Position, _duration)
-                                              .SetEase(_ease);
-                default:
-                    return null;
-            }
+            return item.TransformCached.DOMove(endPos, _duration)
+                .ChangeStartValue(startPos)
+                .SetEase(_ease);
         }
     }
 }

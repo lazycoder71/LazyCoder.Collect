@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace LazyCoder.Collect
 {
+    [System.Serializable]
     public class CollectStepActionTransform : CollectStepAction
     {
         [SerializeField] protected bool ChangeStartValue;

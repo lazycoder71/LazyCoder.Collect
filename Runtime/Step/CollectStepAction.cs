@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace LazyCoder.Collect
 {
+    [System.Serializable]
     public abstract class CollectStepAction : CollectStep
     {
         [SerializeField]
@@ -37,7 +38,7 @@ namespace LazyCoder.Collect
         [ShowIf("@_loopTime != 0"), HorizontalGroup("Loop"), LabelWidth(75)]
         private LoopType _loopType = LoopType.Restart;
 
-        public override void Apply(CollectGroupItem obj)
+        public override void Apply(CollectItem obj)
         {
             Tween tween = GetTween(obj);
 
@@ -59,7 +60,7 @@ namespace LazyCoder.Collect
             }
         }
 
-        protected virtual Tween GetTween(CollectGroupItem item)
+        protected virtual Tween GetTween(CollectItem item)
         {
             return null;
         }

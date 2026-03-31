@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace LazyCoder.Collect
 {
+    [System.Serializable]
     public abstract class CollectStepActionMove : CollectStepAction
     {
         [Serializable]
@@ -17,31 +18,45 @@ namespace LazyCoder.Collect
 
         [SerializeField] protected Journey _journey;
 
-        [Space]
+        [ShowIf("@_journey == Journey.Spawn")]
+        [SerializeField] protected bool _spawnAtCenter;
 
         [ShowIf("@_journey == Journey.Spawn")]
-        [SerializeField] protected bool _startAtCenter;
-        [ShowIf("@_journey == Journey.Spawn && !_startAtCenter")]
-        [SerializeField] protected Vector3 _startOffset;
+        [SerializeField] protected Vector3 _spawnOffset;
 
-        public override string DisplayName { get { return $"{base.DisplayName} ({_journey})"; } }
+        public override string DisplayName => $"{base.DisplayName} ({_journey})";
 
-        protected override Tween GetTween(CollectGroupItem item)
+        protected Vector3 GetStartPosition(CollectItem item)
         {
             switch (_journey)
             {
                 case Journey.Spawn:
-                    Vector3 endPos = item.TransformCached.localPosition;
-                    Vector3 startPos = _startAtCenter ? Vector3.zero : endPos + _startOffset * item.RectTransform.GetUnitPerPixel();
+                    if (_spawnAtCenter)
+                        return item.TransformCached.parent.position +
+                               _spawnOffset * item.RectTransform.GetUnitPerPixel();
 
-                    return item.TransformCached.DOLocalMove(endPos, _duration)
-                                              .ChangeStartValue(startPos)
-                                              .SetEase(_ease);
+                    return item.TransformCached.position + _spawnOffset * item.RectTransform.GetUnitPerPixel();
+                
                 case Journey.Return:
-                    return item.TransformCached.DOMove(item.Destination.Position, _duration)
-                                              .SetEase(_ease);
+                    return item.TransformCached.position;
+
                 default:
-                    return null;
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        protected Vector3 GetEndPosition(CollectItem item)
+        {
+            switch (_journey)
+            {
+                case Journey.Spawn:
+                    return item.TransformCached.position;
+                
+                case Journey.Return:
+                    return item.Destination.Position;
+                
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
     }

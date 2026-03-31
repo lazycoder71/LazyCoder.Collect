@@ -11,6 +11,8 @@ namespace LazyCoder.Collect
         [AssetsOnly]
         [SerializeField] private GameObject _spawnPrefab;
 
+        [Tooltip("Duration of the spawn animation." +
+                 "This is used to calculate the delay of each item in the spawn step.")]
         [SerializeField] private float _spawnDuration = 0.5f;
 
         [FoldoutGroup("SpawnSample", GroupName = "Spawn Sample (in pixel unit)", Expanded = false)]

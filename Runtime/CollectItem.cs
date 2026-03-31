@@ -7,7 +7,7 @@ using UnityEngine.Events;
 
 namespace LazyCoder.Collect
 {
-    public class CollectGroupItem : MonoBase
+    public class CollectItem : MonoBase
     {
         [Title("Event")]
         [SerializeField] private UnityEvent _onSpawn;
@@ -29,7 +29,7 @@ namespace LazyCoder.Collect
                 return _rectTransform;
             }
         }
-        
+
         public CollectDestination Destination => _group.Destination;
 
         private void OnDestroy()
@@ -44,9 +44,9 @@ namespace LazyCoder.Collect
             Sequence?.Kill();
             Sequence = DOTween.Sequence();
 
-            for (int i = 0; i < _group.Config.Steps.Length; i++)
+            foreach (var step in _group.Config.Steps)
             {
-                _group.Config.Steps[i].Apply(this);
+                step.Apply(this);
             }
 
             Sequence.OnComplete(Sequence_OnComplete);
@@ -59,7 +59,7 @@ namespace LazyCoder.Collect
             _group.Destination.Collect();
 
             TransformCached.SetParent(null);
-            
+
             PoolPrefabShared.Release(GameObjectCached);
 
             _onCollected?.Invoke();

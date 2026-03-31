@@ -82,8 +82,8 @@ namespace LazyCoder.Collect
 
         private void Spawn(Vector3 spawnPosition)
         {
-            CollectGroupItem collectObj = PoolPrefabShared.Get(Config.SpawnPrefab, TransformCached)
-                .GetComponent<CollectGroupItem>();
+            CollectItem collectObj = PoolPrefabShared.Get(Config.SpawnPrefab, TransformCached)
+                .GetComponent<CollectItem>();
 
             collectObj.TransformCached.localPosition = spawnPosition;
             collectObj.TransformCached.localScale = Vector3.one;

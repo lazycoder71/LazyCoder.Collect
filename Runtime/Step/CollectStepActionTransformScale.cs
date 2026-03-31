@@ -2,9 +2,10 @@ using DG.Tweening;
 
 namespace LazyCoder.Collect
 {
+    [System.Serializable]
     public class CollectStepActionTransformScale : CollectStepActionTransform
     {
-        protected override Tween GetTween(CollectGroupItem item)
+        protected override Tween GetTween(CollectItem item)
         {
             var tween = item.TransformCached.DOScale(Value, _duration);
 

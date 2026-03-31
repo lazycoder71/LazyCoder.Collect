@@ -1,8 +1,8 @@
 {
   "name": "lazycoder.unity.collect",
   "displayName": "LazyCoder Collect",
-  "version": "1.0.0",
-  "unity": "6000.1",
+  "version": "1.0.1",
+  "unity": "6000.3",
   "description": "Collect animation for Unity.",
   "keywords": [
     "gui",
