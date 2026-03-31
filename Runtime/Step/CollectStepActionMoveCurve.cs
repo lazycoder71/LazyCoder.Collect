@@ -17,8 +17,8 @@ namespace LazyCoder.Collect
 
             return DOVirtual.Float(0f, 1f, _duration, (time) =>
             {
-                float x = Mathf.Lerp(startPos.x, endPos.x, _x.Evaluate(time));
-                float y = Mathf.Lerp(startPos.y, endPos.y, _y.Evaluate(time));
+                float x = Mathf.LerpUnclamped(startPos.x, endPos.x, _x.Evaluate(time));
+                float y = Mathf.LerpUnclamped(startPos.y, endPos.y, _y.Evaluate(time));
 
                 item.TransformCached.SetXY(x, y);
             }).SetEase(_ease);
