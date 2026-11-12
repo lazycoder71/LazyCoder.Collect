@@ -57,5 +57,22 @@ namespace LazyCoder.Collect
         public virtual void CollectEnd()
         {
         }
+
+        /// <summary>
+        /// One item of the group spawned with <paramref name="context"/> arrived.
+        /// Override this one when the destination needs to know which spawn the item belongs to.
+        /// </summary>
+        public virtual void Collect(CollectContext context)
+        {
+            Collect();
+        }
+
+        /// <summary>
+        /// Every item of the group spawned with <paramref name="context"/> has arrived.
+        /// </summary>
+        public virtual void CollectEnd(CollectContext context)
+        {
+            CollectEnd();
+        }
     }
 }

@@ -56,13 +56,15 @@ namespace LazyCoder.Collect
 
         private void Sequence_OnComplete()
         {
-            _group.Destination.Collect();
-
-            TransformCached.SetParent(null);
+            // Raised while the item is still active, listeners on it would not run once it is pooled
+            _onCollected?.Invoke();
 
             PoolPrefabShared.Release(GameObjectCached);
 
-            _onCollected?.Invoke();
+            // The pool does not reparent: leave the group, it destroys itself after its last item
+            TransformCached.SetParent(null, false);
+
+            _group.ItemCollected();
         }
     }
 }

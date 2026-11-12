@@ -2,6 +2,7 @@ using DG.Tweening;
 using LazyCoder.Core;
 using LazyCoder.Pool;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace LazyCoder.Collect
@@ -18,6 +19,8 @@ namespace LazyCoder.Collect
 
         private Action _onComplete;
 
+        private int _remainCount;
+
         private void OnDestroy()
         {
             _tween?.Kill();
@@ -29,10 +32,22 @@ namespace LazyCoder.Collect
             Config = config;
             Context = context;
             Destination = destination;
-            
+
             _onComplete = onComplete;
 
             int spawnCount = context.SpawnCount;
+
+            _remainCount = spawnCount;
+
+            // Notify destination about the return begin
+            destination.CollectBegin(context);
+
+            if (spawnCount <= 0)
+            {
+                Destruct();
+
+                return;
+            }
 
             float delayBetween = spawnCount > 1 ? config.SpawnDuration / (spawnCount - 1) : 0.0f;
 
@@ -41,39 +56,48 @@ namespace LazyCoder.Collect
 
             for (int i = 0; i < spawnCount; i++)
             {
-                Vector3 spawnPosition = config.SpawnPositions.GetLoop(i);
+                Vector3 spawnPosition = GetSpawnPosition(config.SpawnPositions, i);
 
                 sequence.AppendCallback(() => { Spawn(spawnPosition); });
-                sequence.AppendInterval(delayBetween);
+
+                if (i < spawnCount - 1)
+                    sequence.AppendInterval(delayBetween);
             }
 
             sequence.Play();
-            sequence.OnComplete(StartCheckEmptyLoop);
 
             _tween?.Kill();
             _tween = sequence;
-
-            // Notify destination about the return begin
-            destination.CollectBegin(context);
         }
 
-        private void StartCheckEmptyLoop()
+        /// <summary>
+        /// Called by an item once it is back in the pool.
+        /// </summary>
+        public void ItemCollected()
         {
-            _tween?.Kill();
-            _tween = DOVirtual.DelayedCall(1.0f, null, false)
-                .SetLoops(-1, LoopType.Restart)
-                .OnUpdate(CheckEmpty);
-        }
+            // The destination can be gone before the last item lands (page closed, scene unloading)
+            if (Destination != null)
+                Destination.Collect(Context);
 
-        private void CheckEmpty()
-        {
-            if (TransformCached.childCount == 0)
+            _remainCount--;
+
+            if (_remainCount <= 0)
                 Destruct();
+        }
+
+        private static Vector3 GetSpawnPosition(List<Vector3> positions, int index)
+        {
+            // A config with no sample generated yet spawns everything at the center
+            if (positions == null || positions.Count == 0)
+                return Vector3.zero;
+
+            return positions.GetLoop(index);
         }
 
         private void Destruct()
         {
-            Destination.CollectEnd();
+            if (Destination != null)
+                Destination.CollectEnd(Context);
 
             _onComplete?.Invoke();
 

@@ -4,17 +4,22 @@ namespace LazyCoder.Collect
 {
     public static class CollectDestinationManager
     {
-        private static Dictionary<CollectConfig, Stack<CollectDestination>> s_destinationDict;
+        // The most recently enabled destination of a config wins, it sits last in its list
+        private static Dictionary<CollectConfig, List<CollectDestination>> s_destinationDict;
 
         public static void Push(CollectDestination destination)
         {
             if (s_destinationDict == null)
-                s_destinationDict = new Dictionary<CollectConfig, Stack<CollectDestination>>();
+                s_destinationDict = new Dictionary<CollectConfig, List<CollectDestination>>();
 
-            if (!s_destinationDict.ContainsKey(destination.Config))
-                s_destinationDict.Add(destination.Config, new Stack<CollectDestination>());
+            if (!s_destinationDict.TryGetValue(destination.Config, out List<CollectDestination> destinations))
+            {
+                destinations = new List<CollectDestination>();
 
-            s_destinationDict[destination.Config].Push(destination);
+                s_destinationDict.Add(destination.Config, destinations);
+            }
+
+            destinations.Add(destination);
         }
 
         public static void Pop(CollectDestination destination)
@@ -22,14 +27,11 @@ namespace LazyCoder.Collect
             if (s_destinationDict == null)
                 return;
 
-            Stack<CollectDestination> stack;
-
-            s_destinationDict.TryGetValue(destination.Config, out stack);
-
-            if (stack == null || stack.Count == 0)
+            if (!s_destinationDict.TryGetValue(destination.Config, out List<CollectDestination> destinations))
                 return;
 
-            stack.Pop();
+            // Destinations do not always disable in the reverse order they enabled, remove this one exactly
+            destinations.Remove(destination);
         }
 
         public static CollectDestination Get(CollectConfig config)
@@ -37,15 +39,13 @@ namespace LazyCoder.Collect
             if (s_destinationDict == null)
                 return null;
 
-            if (!s_destinationDict.ContainsKey(config))
+            if (!s_destinationDict.TryGetValue(config, out List<CollectDestination> destinations))
                 return null;
 
-            Stack<CollectDestination> stack = s_destinationDict[config];
-
-            if(stack == null || stack.Count == 0) 
+            if (destinations.Count == 0)
                 return null;
 
-            return stack.Peek();
+            return destinations[^1];
         }
     }
 }
