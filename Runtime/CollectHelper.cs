@@ -15,7 +15,7 @@ namespace LazyCoder.Collect
             // Check destination exists
             if (destination == null)
             {
-                LDebug.Log(typeof(CollectHelper), $"Can't find destination for {config.name}");
+                LzDebug.Log(typeof(CollectHelper), $"Can't find destination for {config.name}");
 
                 onComplete?.Invoke();
 
