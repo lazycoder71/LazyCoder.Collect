@@ -32,6 +32,13 @@ namespace LazyCoder.Collect
 
         public CollectDestination Destination => _group.Destination;
 
+        /// <summary>
+        /// Where the item rests once it has spread out, taken before any step is built.
+        /// Steps must use this instead of the live position: a tween given a start value
+        /// rewinds on creation and moves the item while the sequence is still being built.
+        /// </summary>
+        public Vector3 SpawnPosition { get; private set; }
+
         private void OnDestroy()
         {
             Sequence?.Kill();
@@ -40,6 +47,8 @@ namespace LazyCoder.Collect
         public virtual void Construct(CollectGroup group)
         {
             _group = group;
+
+            SpawnPosition = TransformCached.position;
 
             Sequence?.Kill();
             Sequence = DOTween.Sequence();

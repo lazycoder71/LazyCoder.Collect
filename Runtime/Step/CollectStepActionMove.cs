@@ -35,10 +35,10 @@ namespace LazyCoder.Collect
                         return item.TransformCached.parent.position +
                                _spawnOffset * item.RectTransform.GetUnitPerPixel();
 
-                    return item.TransformCached.position + _spawnOffset * item.RectTransform.GetUnitPerPixel();
+                    return item.SpawnPosition + _spawnOffset * item.RectTransform.GetUnitPerPixel();
                 
                 case Journey.Return:
-                    return item.TransformCached.position;
+                    return item.SpawnPosition;
 
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -50,7 +50,7 @@ namespace LazyCoder.Collect
             switch (_journey)
             {
                 case Journey.Spawn:
-                    return item.TransformCached.position;
+                    return item.SpawnPosition;
                 
                 case Journey.Return:
                     return item.Destination.Position;
