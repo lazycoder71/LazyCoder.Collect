@@ -15,6 +15,22 @@ namespace LazyCoder.Collect
 
         public CollectContext Context { get; private set; }
 
+        private Vector3 _destinationPosition;
+
+        /// <summary>
+        /// Where items return to. Keeps the last known spot once the destination is gone (page closed, scene unloading).
+        /// </summary>
+        public Vector3 DestinationPosition
+        {
+            get
+            {
+                if (Destination != null)
+                    _destinationPosition = Destination.Position;
+
+                return _destinationPosition;
+            }
+        }
+
         private Tween _tween;
 
         private Action _onComplete;
@@ -34,6 +50,8 @@ namespace LazyCoder.Collect
             Destination = destination;
 
             _onComplete = onComplete;
+
+            _destinationPosition = destination.Position;
 
             int spawnCount = context.SpawnCount;
 

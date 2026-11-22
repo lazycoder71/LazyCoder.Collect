@@ -33,6 +33,11 @@ namespace LazyCoder.Collect
         public CollectDestination Destination => _group.Destination;
 
         /// <summary>
+        /// Use this rather than <see cref="Destination"/>, which is null once the destination is destroyed.
+        /// </summary>
+        public Vector3 DestinationPosition => _group.DestinationPosition;
+
+        /// <summary>
         /// Where the item rests once it has spread out, taken before any step is built.
         /// Steps must use this instead of the live position: a tween given a start value
         /// rewinds on creation and moves the item while the sequence is still being built.

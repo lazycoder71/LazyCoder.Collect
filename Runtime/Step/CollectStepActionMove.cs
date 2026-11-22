@@ -53,7 +53,7 @@ namespace LazyCoder.Collect
                     return item.SpawnPosition;
                 
                 case Journey.Return:
-                    return item.Destination.Position;
+                    return item.DestinationPosition;
                 
                 default:
                     throw new ArgumentOutOfRangeException();

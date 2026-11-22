@@ -28,7 +28,13 @@ namespace LazyCoder.Collect
             // Set up the Collect object
             CollectGroup collectGroup = objCollect.AddComponent<CollectGroup>();
 
-            collectGroup.TransformCached.SetParent(destination.TransformCached.parent, false);
+            // A layer keeps the group alive and on top when the destination or the spawn source sits under a page
+            Transform parent = CollectLayer.Current;
+
+            if (parent == null)
+                parent = destination.TransformCached.parent;
+
+            collectGroup.TransformCached.SetParent(parent, false);
             collectGroup.TransformCached.SetAsLastSibling();
             collectGroup.TransformCached.position = spawnPosition;
 
